@@ -12,15 +12,15 @@ import java.util.Map;
  * Implementation of reference tracker.
  */
 public class ReferenceTrackerImpl implements ReferenceTracker {
-    private static final HashMap<Class, ArrayList<WeakReference<Activity>>> sReferences =
+    private final HashMap<Class, ArrayList<WeakReference<Activity>>> references =
             new HashMap<>();
 
     @Override
     public void onActivityCreated(Activity activity) {
-        ArrayList<WeakReference<Activity>> listForClass = sReferences.get(activity.getClass());
+        ArrayList<WeakReference<Activity>> listForClass = references.get(activity.getClass());
         if (listForClass == null) {
             listForClass = new ArrayList<>();
-            sReferences.put(activity.getClass(), listForClass);
+            references.put(activity.getClass(), listForClass);
         }
         listForClass.add(new WeakReference<>(activity));
     }
@@ -28,7 +28,7 @@ public class ReferenceTrackerImpl implements ReferenceTracker {
     @Override
     public Map<Class, Integer> getReferencesCount() {
         final Map<Class, Integer> referencesMap = new HashMap<>();
-        for (Map.Entry<Class, ArrayList<WeakReference<Activity>>> refs : sReferences.entrySet()) {
+        for (Map.Entry<Class, ArrayList<WeakReference<Activity>>> refs : references.entrySet()) {
             Class clazz = refs.getKey();
             int counterForClass = 0;
             Iterator<WeakReference<Activity>> iterator = refs.getValue().iterator();
